@@ -1,14 +1,35 @@
 #pragma once
+#include<chrono>
 template<typename T = float, size_t N = 1, size_t M = 1, size_t R = 1, size_t L = 1>
 class MatrixMult
 {
 public:
+	struct timer
+	{
+		std::chrono::steady_clock::time_point  start_time, end_time;
+		std::chrono::steady_clock::duration elapsed_time;
+		timer() : start_time(std::chrono::steady_clock::now()), end_time({}), elapsed_time({})
+		{
+
+		}
+
+		~timer()
+		{
+			end_time = std::chrono::steady_clock::now();
+			elapsed_time = end_time - start_time;
+			std::cout << "elapsd time = " << elapsed_time.count() / 1000000.0f << "ms" << std::endl;
+		}
+	};
+
 	MatrixMult() = delete;
 	~MatrixMult() = delete;
 
 	// cast to T at the function call to force unique type among paramaters and to get compile-time error if the inputs type and T are different -> type safe
 	static void vecmultmat(const T vector[N], const T matrix[M][R], T outvector[L])
 	{
+		//	timer
+		timer function_timer{};
+		
 		//   x   *   A =   y
 		//   1xN x MxR = 1xL ==> check if (N==M && R==L)
 		if (!(N == M && R == L))
@@ -78,4 +99,5 @@ public:
 		std::cout << "Datatype must be numerical!" << std::endl;
 	}
 };
+
 
